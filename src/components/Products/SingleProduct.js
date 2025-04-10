@@ -4,46 +4,67 @@
  ** Github URL: https://github.com/quintuslabs/fashion-cube
  */
 
-import React from "react";
-import jumpTo from "../../modules/Navigation";
-
-function SingleProduct(props) {
-  const { productItem } = props;
-  return (
-    <div className="product-item men">
-      <div
-        className="product discount product_filter"
-        onClick={() =>
-          jumpTo(`/fashion-cube/single-product/${productItem._id}`)
-        }
-      >
-        <div className="product_image">
-          <img src={productItem.imagePath} alt="" className="img-fluid" />
-        </div>
-        <div className="favorite favorite_left">
-          <i className="far fa-heart"></i>
-        </div>
-        {/* <div className="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
-          <span>-$20</span>
-        </div> */}
-        <div className="product_info">
-          <h6 className="product_name">
-            <div>{productItem.title}</div>
-          </h6>
-          <div className="product_price">
-            ₹ {productItem.price}
-            <span> ₹ {(parseFloat(productItem.price) + 30).toFixed(2)}</span>
-          </div>
-        </div>
-      </div>
-      <div
-        className="red_button add_to_cart_button"
-        onClick={() => props.addToBag(productItem._id)}
-      >
-        <div style={{ color: "#ffffff" }}>add to cart</div>
-      </div>
-    </div>
-  );
-}
-
-export default SingleProduct;
+ import React, { useState } from "react";
+ import SkeletonProduct from "./SkeltonProduct";
+ import FavouriteIcon from "./FavouriteIcon";
+ import ProductPrice from "./ProductPrice";
+ import styles from "./SingleProduct.module.css";
+ const SingleProduct = ({ productItem, onNavigate, onAddToCart }) => {
+   const[imageError,setImageError]=useState(false)
+   if (!productItem) {
+     return <SkeletonProduct type={'product'} />;
+   }
+   const HandleNavigate = () => {
+     onNavigate(productItem._id);
+   };
+   const HandleAddToCart = (e) => {
+     e.stopPropagation();
+     onAddToCart(productItem._id);
+   };
+   return (
+     <div className={styles.card}>
+       <div
+         className={`${styles.product} ${styles.discount}`}
+         onClick={HandleNavigate}
+       >
+         <div className={styles.image}>
+           {!imageError ?<img
+             src={productItem.imagePath}
+             alt={productItem.title}
+             className={styles.imageTag}
+             loading="lazy"
+             onError={()=>setImageError(true)}
+           />:<SkeletonProduct type={'image'}/>}
+           
+         </div>
+         <div>
+           <FavouriteIcon />
+         </div>
+         {productItem.discount && (
+           <div className={`${styles.productBubble}`}>
+             <span>-${productItem.discount}</span>
+           </div>
+         )}
+ 
+         <div className={styles.info}>
+           <h6 className={styles.name}>
+             <div>{productItem.title}</div>
+           </h6>
+           <div>
+             <ProductPrice productItem={productItem} />
+           </div>
+         </div>
+         <button
+           className={`${styles.addToCart}`}
+           onClick={HandleAddToCart}
+           aria-label={`Add${productItem.title} to cart`}
+         >
+           Add to Cart
+         </button>
+       </div>
+     </div>
+   );
+ };
+ 
+ export default React.memo(SingleProduct);
+ 

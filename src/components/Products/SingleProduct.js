@@ -22,7 +22,7 @@
      onAddToCart(productItem._id);
    };
    return (
-     <div className={styles.card}>
+     <div className={styles.card} >
        <div
          className={`${styles.product} ${styles.discount}`}
          onClick={HandleNavigate}

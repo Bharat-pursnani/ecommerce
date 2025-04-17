@@ -17,6 +17,7 @@ import Advertisement from "../../components/Advertisement";
 import PropTypes from "prop-types";
 import jumpTo from "../../modules/Navigation";
 import LoginRegister from "../../components/LoginRegisterModal";
+import EmptyList from "../../components/Products/EmptyList";
 
 class Home extends Component {
   constructor(props) {
@@ -63,6 +64,7 @@ class Home extends Component {
 
   render() {
     const { products, departments } = this.props;
+   
     return (
       <div>
         <HomeBanner />
@@ -73,7 +75,7 @@ class Home extends Component {
             departments={departments}
             addToBag={this.addToBag}
           />
-        ) : null}
+        ) : <EmptyList message="No Products Found."/>}
         <Benefit />
         <Advertisement />
         {products ? (
